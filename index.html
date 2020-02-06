@@ -1,0 +1,48 @@
+<!---チャットアプリ-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>web socket</title>
+</head>
+<body>
+<input type="text" id="msg_input" style="width:200px;">
+<button onclick="publishMessage();">語る</button>
+<div id="msg"></div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script>
+//イベントとコールバックの定義
+var socket = io.connect("http://localhost:8080");
+
+//serverでのsocket.onイベントはここにも書いておく
+socket.on("connected", function(name){});
+socket.on("publish", function(data){ addMessage(data.value);});
+socket.on("disconnect", function(){});
+
+var msgArea = document.querySelector("#msg");
+var myName = Math.floor(Math.random()*100) + "さん";
+addMessage("貴方は" + myName + "として入室しました");
+start(myName);
+
+// チャットアプリのサーバ側に接続する
+function start(name){
+	socket.emit("connected", name);
+}
+
+// メッセージの送信
+function publishMessage(){
+	var textInput = document.querySelector("#msg_input");
+	var msg = "[" + myName + "] " + textInput.value;
+	socket.emit("publish", {value: msg});
+	textInput.value = "";
+}
+
+// 自身の送信時やサーバ側から受信した際のメッセージを表示する
+function addMessage(msg){
+	var domMsg = document.createElement("div");
+	domMsg.innerHTML = new Date().toLocaleTimeString() + " " + msg;
+	msgArea.appendChild(domMsg);
+}
+</script>
+</body>
+</html>

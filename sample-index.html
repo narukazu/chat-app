@@ -1,0 +1,28 @@
+<!--Socket.IO　練習-->
+<!DOCTYPE html> 
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> <!----"/socket.io/socket.io.js"-->
+    <script>
+    /*送信はemit 受信はsocket.onで可能。*/
+    //サーバーに接続
+    var socket = io.connect("http://localhost:8080");
+
+    // サーバーへデータを送信
+    socket.emit("dataName2", { text:"ウィンドウが開きました" });
+
+    // サーバーからのデータを受信
+    socket.on("dataName1", dataFromServer => {
+    console.log(dataFromServer.msg);        //console出力
+    alert(dataFromServer.msg);              //local8080から内容が通知される 自分を含め全員に通知
+    });
+
+    </script>
+    <title>Socket.IOを用いた練習ソース</title>
+  </head> 
+
+  <body>
+    　　<p>ターミナルとブラウザのコンソールを確認</p>
+  </body> 
+</html>
